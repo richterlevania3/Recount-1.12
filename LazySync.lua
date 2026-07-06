@@ -40,10 +40,10 @@ function Recount.SendCommMessage(self,a,b,channel,...)
 
 	if channel == "RAID" and GetNumRaidMembers() > 0 then
 		Recount:DPrint("A "..a.." "..channel)
-		oldSendCommMessage(self,a,b,channel,...)
+		oldSendCommMessage(self,a,b,channel,unpack(arg))
 	elseif channel ~= "RAID" then
 		Recount:DPrint("B "..a.." "..channel)
-		oldSendCommMessage(self,a,b,channel,...)
+		oldSendCommMessage(self,a,b,channel,unpack(arg))
 	end
 end
 
@@ -111,7 +111,7 @@ function Recount:SendSelf(target)
 	local serialpetdata = {}
 	
 	if data.Pet then
-		for i=1,#data.Pet do
+		for i=1,table.getn(data.Pet) do
 			local petname = data.Pet[i]
 			if Recount:GetLazySyncTouched(myname,petname) then
 				local damage = Recount:GetLazySyncAmount(myname,petname,"Damage") or 0
@@ -131,7 +131,7 @@ function Recount:SendSelf(target)
 	-- Sync self
 	Recount:SendCommMessage("RECOUNT",serialdata,"WHISPER",target)
 	-- Sync pets
-	for i=1,#serialpetdata do
+	for i=1,table.getn(serialpetdata) do
 		Recount:SendCommMessage("RECOUNT",serialpetdata[i],"WHISPER",target) 
 	end
 end
@@ -175,7 +175,7 @@ function Recount:BroadcastLazySync()
 	local serialpetdata = {}
 	
 	if data and data.Pet then
-		for i=1,#data.Pet do
+		for i=1,table.getn(data.Pet) do
 			--local petrecord = dbCombatants[data.Pet[i]] and dbCombatants[data.Pet[i]].Sync
 			local petname = data.Pet[i]
 			if Recount:GetLazySyncTouched(myname,petname) then
@@ -239,13 +239,13 @@ function Recount:BroadcastLazySync()
 			end
 
 			-- Sync pets
-			for i=1,#serialpetdata do
+			for i=1,table.getn(serialpetdata) do
 				--Recount:Print("Pet"..i..": "..serialpetdata[i])
 				Recount:SendCommMessage("RECOUNT",serialpetdata[i],"WHISPER",name) 
 			end
 		
 			-- Sync bosses
-			for i=1,#serialbossdata do
+			for i=1,table.getn(serialbossdata) do
 				--Recount:Print("Boss"..i..": "..serialbossdata[i])
 				Recount:SendCommMessage("RECOUNT",serialbossdata[i],"WHISPER",name)
 			end
@@ -271,12 +271,12 @@ function Recount:BroadcastLazySync()
 						end
 
 						-- Sync pets
-						for i=1,#serialpetdata do
+						for i=1,table.getn(serialpetdata) do
 							Recount:SendCommMessage("RECOUNT",serialpetdata[i],"WHISPER",name) 
 						end
 					
 						-- Sync bosses
-						for i=1,#serialbossdata do
+						for i=1,table.getn(serialbossdata) do
 							Recount:SendCommMessage("RECOUNT",serialbossdata[i],"WHISPER",name)
 						end
 						combatant.lazysync = nil				
@@ -297,13 +297,13 @@ function Recount:BroadcastLazySync()
 						end
 
 						-- Sync pets
-						for i=1,#serialpetdata do
+						for i=1,table.getn(serialpetdata) do
 							--Recount:Print("Pet"..i..": "..serialpetdata[i])
 							Recount:SendCommMessage("RECOUNT",serialpetdata[i],"WHISPER",name) 
 						end
 					
 						-- Sync bosses
-						for i=1,#serialbossdata do
+						for i=1,table.getn(serialbossdata) do
 							--Recount:Print("Boss"..i..": "..serialbossdata[i])
 							Recount:SendCommMessage("RECOUNT",serialbossdata[i],"WHISPER",name)
 						end
@@ -403,7 +403,7 @@ function Recount:OnCommReceive(prefix, Msgs, distribution, target)
 				--local owner = name
 				local version = name
 				if type(version)~="number" then
-					Recount.VerNum[owner]=tonumber(string.match(version,"Revision: (%d+)")) -- Elsia: Old format
+					Recount.VerNum[owner]=tonumber(RecountStrMatch(version,"Revision: (%d+)")) -- Elsia: Old format
 				else
 					Recount.VerNum[owner] =version
 				end
@@ -434,7 +434,7 @@ function Recount:OnCommReceive(prefix, Msgs, distribution, target)
 				Recount.VerTable=Recount.VerTable or {} -- Elsia: This really shouldn't happen but it does!
 				Recount.VerNum=Recount.VerNum or {}
 				if type(version)~="number" then
-					Recount.VerNum[owner]=tonumber(string.match(version,"Revision: (%d+)")) -- Elsia: Old format
+					Recount.VerNum[owner]=tonumber(RecountStrMatch(version,"Revision: (%d+)")) -- Elsia: Old format
 				else
 					Recount.VerNum[owner] =version
 				end
@@ -464,7 +464,7 @@ function Recount:ConfigComm()
 		Recount.VerTable=Recount.VerTable or {} -- Elsia: This really shouldn't happen but it does!
 		Recount.VerNum=Recount.VerNum or {}
 		if type(version)~="number" then
-			Recount.VerNum[owner]=tonumber(string.match(version,"Revision: (%d+)")) -- Elsia: Old format
+			Recount.VerNum[owner]=tonumber(RecountStrMatch(version,"Revision: (%d+)")) -- Elsia: Old format
 		else
 			Recount.VerNum[owner] =version
 		end

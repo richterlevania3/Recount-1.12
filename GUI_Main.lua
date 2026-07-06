@@ -11,7 +11,7 @@ if Recount.Version < revision then Recount.Version = revision end
 local dbCombatants
 
 local string_format = string.format
-local string_match = string.match
+local string_match = RecountStrMatch
 local math_max = math.max
 local math_floor = math.floor
 local tinsert = table.insert
@@ -26,13 +26,13 @@ local CreateFrame = CreateFrame
 -- Based on cck's numeric Short code in DogTag-3.0.
 function Recount.ShortNumber(value)
 	if value >= 10000000 or value <= -10000000 then
-		return ("%.1fm"):format(value / 1000000)
+		return string.format("%.1fm", value / 1000000)
 	elseif value >= 1000000 or value <= -1000000 then
-		return ("%.2fm"):format(value / 1000000)
+		return string.format("%.2fm", value / 1000000)
 	elseif value >= 100000 or value <= -100000 then
-		return ("%.0fk"):format(value / 1000)
+		return string.format("%.0fk", value / 1000)
 	elseif value >= 10000 or value <= -10000 then
-		return ("%.1fk"):format(value / 1000)
+		return string.format("%.1fk", value / 1000)
 	else
 		return math_floor(value+0.5)..''
 	end
@@ -40,14 +40,14 @@ end
 
 -- This is comma_value() by Richard Warburton from: http://lua-users.org/wiki/FormattingNumbers with slight modifications (and a bug fix)
 function Recount.CommaNumber(n)
-	n = ("%.0f"):format(n)
+	n = string.format("%.0f", n)
    	local left,num,right = string_match(n,'^([^%d]*%d)(%d+)(.-)$')
-   	return left and left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse()) or n --..right
+   	return left and left..(string.reverse((string.gsub(string.reverse(num),'(%d%d%d)','%1,')))) or n --..right
 end
 
 local NumFormats =
 {
-	function(value) return ("%.0f"):format(value) end,
+	function(value) return string.format("%.0f", value) end,
 	Recount.CommaNumber,
 	Recount.ShortNumber
 }
@@ -297,7 +297,7 @@ function me:FixRow(i)
 	local LText=row.LeftText:GetText()
 	
 	while row.LeftText:GetStringWidth()>MaxNameWidth do
-		LText=strsub(LText,1,#LText-1)
+		LText=strsub(LText,1,table.getn(LText)-1)
 		row.LeftText:SetText(LText.."...")
 	end
 end
@@ -648,7 +648,7 @@ local ConvertName={
 }
 
 function Recount:GetModeIndex(modestring)
-	for i=1,#Recount.MainWindowData do
+	for i=1,table.getn(Recount.MainWindowData) do
 		if Recount.MainWindowData[i][1] == modestring or Recount.MainWindowData[i][1] == L[modestring] then
 			return i
 		end
@@ -656,7 +656,7 @@ function Recount:GetModeIndex(modestring)
 end
 
 function Recount:SetMainWindowMode(mode)
-	if not mode or mode > #Recount.MainWindowData then
+	if not mode or mode > table.getn(Recount.MainWindowData) then
 		mode = 1
 	end
 

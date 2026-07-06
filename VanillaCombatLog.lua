@@ -410,6 +410,7 @@ frame:SetScript("OnEvent", function()
 		return
 	end
 	-- combat message
+	if not Recount.db or not Recount.db.profile then return end
 	local hint = HOSTILE_EVENTS[event] and FLAG_MOB or FLAG_FRIEND_PC
 	OnMessage(arg1, hint)
 end)
@@ -429,5 +430,6 @@ function Recount:VCL_Enable()
 	end
 end
 
--- Enabled from Recount:OnEnable (see Recount.lua port); safe to call now too.
-Recount:VCL_Enable()
+-- Enabled from Recount's setup (see Recount.lua port, replacing the old
+-- COMBAT_LOG_EVENT_UNFILTERED registration). Not auto-run here so that the
+-- parser only starts once Recount.db exists.

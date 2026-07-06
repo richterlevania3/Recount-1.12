@@ -16,7 +16,7 @@ function Fights:MoveFights()
 	local ReuseFight
 	
 	if not Recount.db.profile.SegmentBosses or Recount.FightingLevel == -1 then
-		for i=math.min(#Recount.db2.FoughtWho,Recount.db.profile.MaxFights-1),1,-1 do
+		for i=math.min(table.getn(Recount.db2.FoughtWho),Recount.db.profile.MaxFights-1),1,-1 do
 			Recount.db2.FoughtWho[i+1]=Recount.db2.FoughtWho[i]
 		end
 		Recount.db2.FoughtWho[1]=Recount.FightingWho.." "..Recount.InCombatF.."-"..date("%H:%M:%S")
@@ -67,7 +67,7 @@ function Fights:MoveFights()
 	--Main Window Display Cache needs to be reset should fix several bugs
 	Recount:FullRefreshMainWindow() -- Elsia: Made a function for this as it's also needed for deleting combatants and refreshing when options change
 	
-	local FightNum=tonumber(string.match(Recount.db.profile.CurDataSet,"Fight(%d+)"))
+	local FightNum=tonumber(RecountStrMatch(Recount.db.profile.CurDataSet,"Fight(%d+)"))
 	
 	if FightNum then
 		Recount.FightName=Recount.db2.FoughtWho[FightNum]

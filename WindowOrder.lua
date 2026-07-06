@@ -11,8 +11,8 @@ local LevelDiff
 
 --based off an aloft function to save memory usage by SetLevel (was creating a table for children frames)
 local function SetLevel_ProcessChildFrames(...)
-	for i = 1, select('#', ...) do
-		local frame = select(i, ...)
+	for i = 1, arg.n do
+		local frame = arg[i]
 
 		Recount:SetLevel(frame,frame:GetFrameLevel()+LevelDiff)
 	end
@@ -61,9 +61,9 @@ function Recount:AddWindow(window)
 	TopWindow=window
 
 	if window:GetName()~="Recount_ConfigWindow" then
-		AddToScale[#AddToScale+1]=window
+		AddToScale[table.getn(AddToScale)+1]=window
 	end
-	AllWindows[#AllWindows+1]=window
+	AllWindows[table.getn(AllWindows)+1]=window
 
 	window.isLocked=Recount.db.profile.Locked
 end

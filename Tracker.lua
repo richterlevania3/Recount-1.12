@@ -875,7 +875,7 @@ function Recount:CombatLogEvent(_,timestamp, eventtype, srcGUID, srcName, srcFla
 	parsefunc = EventParse[eventtype]
 	
 	if parsefunc then
-		parsefunc(self, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+		parsefunc(self, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, unpack(arg))
 	else
 		Recount:Print("Unknown combat log event type: "..eventtype)
 	end
@@ -1994,13 +1994,13 @@ function Recount:HandleDeath(arg)
 	for i=1,num do
 		offset=math_fmod(who.NextEventNum+i+num-2,num)+1
 		if who.LastEvents[offset] and (who.LastEventTimes[offset]-DeathTime)>-15 then
-			DeathLog.MessageTimes[#DeathLog.MessageTimes+1]=who.LastEventTimes[offset]-DeathTime
-			DeathLog.Messages[#DeathLog.Messages+1]=who.LastEvents[offset] or ""
-			DeathLog.MessageType[#DeathLog.MessageType+1]=who.LastEventType[offset] or "MISC"
-			DeathLog.MessageIncoming[#DeathLog.MessageIncoming+1]=who.LastEventIncoming[offset] or false
-			DeathLog.Health[#DeathLog.Health+1]=who.LastEventHealth[offset] or 0
-			DeathLog.HealthNum[#DeathLog.HealthNum+1]=who.LastEventHealthNum[offset] or 0
-			DeathLog.EventNum[#DeathLog.HealthNum]=who.LastEventNum and who.LastEventNum[offset] or 0
+			DeathLog.MessageTimes[table.getn(DeathLog.MessageTimes)+1]=who.LastEventTimes[offset]-DeathTime
+			DeathLog.Messages[table.getn(DeathLog.Messages)+1]=who.LastEvents[offset] or ""
+			DeathLog.MessageType[table.getn(DeathLog.MessageType)+1]=who.LastEventType[offset] or "MISC"
+			DeathLog.MessageIncoming[table.getn(DeathLog.MessageIncoming)+1]=who.LastEventIncoming[offset] or false
+			DeathLog.Health[table.getn(DeathLog.Health)+1]=who.LastEventHealth[offset] or 0
+			DeathLog.HealthNum[table.getn(DeathLog.HealthNum)+1]=who.LastEventHealthNum[offset] or 0
+			DeathLog.EventNum[table.getn(DeathLog.HealthNum)]=who.LastEventNum and who.LastEventNum[offset] or 0
 		end
 	end
 

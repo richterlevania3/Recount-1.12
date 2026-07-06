@@ -32,7 +32,7 @@ local pairs = pairs
 local ipairs = ipairs
 local tonumber = tonumber
 local string_format = string.format
-local string_match = string.match
+local string_match = RecountStrMatch
 local string_lower = string.lower
 local tinsert = table.insert
 local tremove = table.remove
@@ -881,7 +881,7 @@ function Recount:ResetData()
 		Recount:RefreshMainWindow()
 	end
 
-	if #Recount.db2.FoughtWho > 0 then
+	if table.getn(Recount.db2.FoughtWho) > 0 then
 		Recount:SendReset() -- Elsia: Sync the reset if we actually fought something
 	end
  
@@ -1545,14 +1545,14 @@ function Recount:CreateFilterWeights()
 	for i=1,FilterSize do
 		if i<=RampUp then
 			val=i*widthUp
-			FilterWeights[#FilterWeights+1]=val
+			FilterWeights[table.getn(FilterWeights)+1]=val
 			sum=sum+val
 		elseif i<=DownAt then
-			FilterWeights[#FilterWeights+1]=1
+			FilterWeights[table.getn(FilterWeights)+1]=1
 			sum=sum+1
 		else
 			val=(FilterSize-i+1)*widthDown
-			FilterWeights[#FilterWeights+1]=val
+			FilterWeights[table.getn(FilterWeights)+1]=val
 			sum=sum+val
 		end
 	end
@@ -1566,16 +1566,16 @@ end
 
 local LinComp=0.3
 function Recount:CheckIfAlmostLinear(TimeData, NewTime, NewVal)
-	if #TimeData[1]<=1 or (NewTime-TimeData[1][#TimeData[1]])>10 then
+	if table.getn(TimeData[1])<=1 or (NewTime-TimeData[1][table.getn(TimeData[1])])>10 then
 		return false
 	end
 
-	local MidTime=TimeData[1][#TimeData[1]]
-	local MidValue=TimeData[2][#TimeData[2]]
+	local MidTime=TimeData[1][table.getn(TimeData[1])]
+	local MidValue=TimeData[2][table.getn(TimeData[2])]
 
-	local Width=NewTime-TimeData[1][#TimeData[1]-1]
-	local Lerp=(MidTime-TimeData[1][#TimeData[1]-1])/Width
-	local LinValue=Lerp*NewVal+(1-Lerp)*TimeData[2][#TimeData[2]-1]
+	local Width=NewTime-TimeData[1][table.getn(TimeData[1])-1]
+	local Lerp=(MidTime-TimeData[1][table.getn(TimeData[1])-1])/Width
+	local LinValue=Lerp*NewVal+(1-Lerp)*TimeData[2][table.getn(TimeData[2])-1]
 
 	if Lerp>0.5 then
 		Lerp=1-Lerp
@@ -1659,24 +1659,24 @@ function Recount:TimeTick()
 		    if NewEntry~=0 then
 		       --do we need a leading zero?
 		       if not v.TimeNeedZero or not v.TimeNeedZero[k] then
-			  TimeData[1][#TimeData[1]+1]=Time-1-FilterMiddle
-			  TimeData[2][#TimeData[2]+1]=0
+			  TimeData[1][table.getn(TimeData[1])+1]=Time-1-FilterMiddle
+			  TimeData[2][table.getn(TimeData[2])+1]=0
 			  
 			  v.TimeNeedZero = v.TimeNeedZero or {}
 			  v.TimeNeedZero[k]=true
 		       end
 		       
 		       if not Recount:CheckIfAlmostLinear(TimeData, Time-FilterMiddle, NewEntry) then
-			  TimeData[1][#TimeData[1]+1]=Time-FilterMiddle
-			  TimeData[2][#TimeData[2]+1]=NewEntry
+			  TimeData[1][table.getn(TimeData[1])+1]=Time-FilterMiddle
+			  TimeData[2][table.getn(TimeData[2])+1]=NewEntry
 		       else
 			  --If almost linear write over the old value
-			  TimeData[1][#TimeData[1] ]=Time-FilterMiddle
-			  TimeData[2][#TimeData[2] ]=NewEntry
+			  TimeData[1][table.getn(TimeData[1]) ]=Time-FilterMiddle
+			  TimeData[2][table.getn(TimeData[2]) ]=NewEntry
 		       end
 		    elseif v.TimeNeedZero and v.TimeNeedZero[k] then --Check if we need a trailing zero
-		       TimeData[1][#TimeData[1]+1]=Time-FilterMiddle
-		       TimeData[2][#TimeData[2]+1]=0
+		       TimeData[1][table.getn(TimeData[1])+1]=Time-FilterMiddle
+		       TimeData[2][table.getn(TimeData[2])+1]=0
 		       v.TimeNeedZero = v.TimeNeedZero or {}
 		       v.TimeNeedZero[k]=false
 		    end
@@ -1772,7 +1772,7 @@ function Recount:LeaveCombat(Time)
 	end
 
 	if abs(Time-Recount.InCombatT)>3 then
-		Recount.db2.CombatTimes[#Recount.db2.CombatTimes+1]={Recount.InCombatT,Time,Recount.InCombatF,date("%H:%M:%S"),Recount.FightingWho}
+		Recount.db2.CombatTimes[table.getn(Recount.db2.CombatTimes)+1]={Recount.InCombatT,Time,Recount.InCombatF,date("%H:%M:%S"),Recount.FightingWho}
 
 		--Save current data as the last fight
 		Recount.Fights:MoveFights()
@@ -2018,7 +2018,9 @@ function Recount:OnEnable(first)
 	--end -- Elsia: This is obsolete due to deletion code also handling visibility and solo collection checks.
 	
 	--Parser Events
-	Recount:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","CombatLogEvent")
+	-- Vanilla 1.12: COMBAT_LOG_EVENT_UNFILTERED does not exist. VanillaCombatLog.lua
+	-- reconstructs combat events from CHAT_MSG_* text and drives CombatLogEvent.
+	if Recount.VCL_Enable then Recount:VCL_Enable() end
 	
 	if RecountDeathTrack then
 		RecountDeathTrack:SetFight(Recount.db.profile.CurDataSet)
@@ -2099,11 +2101,11 @@ end
 
 function Recount:GetTable()
 	local t
-	if #Tables>0 then
+	if table.getn(Tables)>0 then
 		t=Tables[1]
 		tremove(Tables,1)
-		if #t>0 then
-			Recount:Print("WARNING! For some reason there is "..#t.." entries left. There is probably a table in use that shouldn't have been freed")
+		if table.getn(t)>0 then
+			Recount:Print("WARNING! For some reason there is "..table.getn(t).." entries left. There is probably a table in use that shouldn't have been freed")
 		end
 		return t
 	else
@@ -2117,7 +2119,7 @@ function Recount:HowManyTables(str)
 	else
 		str=str.." "
 	end
-	Recount:Print(str.."Free Tables: "..#Tables)
+	Recount:Print(str.."Free Tables: "..table.getn(Tables))
 end
 
 function Recount:ResetTableCache()

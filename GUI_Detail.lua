@@ -139,23 +139,23 @@ function Recount:FillUpperDetailTable(Data)
 	local UpperTable=Recount.DetailWindow.PieMode.UpperTable
 
 	for k,v in ipairs(UpperTable) do 
-		FreeTables[#FreeTables+1]=v
+		FreeTables[table.getn(FreeTables)+1]=v
 		UpperTable[k]=nil
 	end
 
 	local total=0
 	for k,v in pairs(Data) do
 		if v.count and v.count > 0 or v.amount and v.amount > 0 then
-			if FreeTables[#FreeTables] then
-				UpperTable[#UpperTable+1]=FreeTables[#FreeTables]
-				FreeTables[#FreeTables]=nil
+			if FreeTables[table.getn(FreeTables)] then
+				UpperTable[table.getn(UpperTable)+1]=FreeTables[table.getn(FreeTables)]
+				FreeTables[table.getn(FreeTables)]=nil
 
-				UpperTable[#UpperTable][1]=k
-				UpperTable[#UpperTable][2]=v.amount
-				UpperTable[#UpperTable][3]=v.Details
-				UpperTable[#UpperTable][6]=v.count
+				UpperTable[table.getn(UpperTable)][1]=k
+				UpperTable[table.getn(UpperTable)][2]=v.amount
+				UpperTable[table.getn(UpperTable)][3]=v.Details
+				UpperTable[table.getn(UpperTable)][6]=v.count
 			else
-				UpperTable[#UpperTable+1]={k,v.amount,v.Details,nil,nil,v.count}
+				UpperTable[table.getn(UpperTable)+1]={k,v.amount,v.Details,nil,nil,v.count}
 			end
 			
 			
@@ -251,7 +251,7 @@ function Recount:FillLowerDetailTable(Data)
 	local total=0
 
 	for k,v in ipairs(dispTable) do 
-		FreeTables[#FreeTables+1]=v
+		FreeTables[table.getn(FreeTables)+1]=v
 		dispTable[k]=nil
 	end
 
@@ -265,17 +265,17 @@ function Recount:FillLowerDetailTable(Data)
 
 		if v.count and v.count > 0 then
 				
-			if FreeTables[#FreeTables] then
-				dispTable[#dispTable+1]=FreeTables[#FreeTables]
-				FreeTables[#FreeTables]=nil
+			if FreeTables[table.getn(FreeTables)] then
+				dispTable[table.getn(dispTable)+1]=FreeTables[table.getn(FreeTables)]
+				FreeTables[table.getn(FreeTables)]=nil
 
-				dispTable[#dispTable][1]=k
-				dispTable[#dispTable][2]=v.count
-				dispTable[#dispTable][3]=v.min
-				dispTable[#dispTable][4]=avg
-				dispTable[#dispTable][5]=v.max
+				dispTable[table.getn(dispTable)][1]=k
+				dispTable[table.getn(dispTable)][2]=v.count
+				dispTable[table.getn(dispTable)][3]=v.min
+				dispTable[table.getn(dispTable)][4]=avg
+				dispTable[table.getn(dispTable)][5]=v.max
 			else
-				dispTable[#dispTable+1]={k,v.count,v.min,avg,v.max}
+				dispTable[table.getn(dispTable)+1]={k,v.count,v.min,avg,v.max}
 			end
 			total=total+v.count
 		end
@@ -486,7 +486,7 @@ function me:FilterDeathData(filterType,filterIncoming)
 		return
 	end
 
-	for i=1,#Data.Messages do
+	for i=1,table.getn(Data.Messages) do
 		if filterType[Data.MessageType[i]] and filterIncoming[Data.MessageIncoming[i]] then
 			table.insert(FilterData.Messages,Data.Messages[i])
 			table.insert(FilterData.MessageType,Data.MessageType[i])
@@ -506,20 +506,20 @@ function me:ShowDeathGraph()
 
 	if Data then
 		for k,time in pairs(Data.MessageTimes) do
-			Health[#Health+1]={time,Data.HealthNum[k]}
+			Health[table.getn(Health)+1]={time,Data.HealthNum[k]}
 
 			if Data.EventNum[k] then
 				if Data.MessageType[k]=="HEAL" then
 					if Heals==nil then
 						Heals=Recount:GetTable()
 					end
-					Heals[#Heals+1]={time,Data.EventNum[k]}
+					Heals[table.getn(Heals)+1]={time,Data.EventNum[k]}
 					--Recount:DPrint("Heal: "..time.." "..Data.EventNum[k])
 				elseif Data.MessageType[k]=="DAMAGE" then
 					if Hits==nil then
 						Hits=Recount:GetTable()
 					end
-					Hits[#Hits+1]={time,Data.EventNum[k]}
+					Hits[table.getn(Hits)+1]={time,Data.EventNum[k]}
 					--Recount:DPrint("Hits: "..time.." "..Data.EventNum[k])
 				end
 			end
@@ -537,7 +537,7 @@ function me:CountDeathLogLines()
 	local Row=Recount.DetailWindow.DeathMode.DeathLog[1]
 	local NextLine
 
-	for i=1,#Data.Messages do
+	for i=1,table.getn(Data.Messages) do
 		Row.Msg:SetText("("..L["Health"]..": "..Data.Health[i]..") "..Data.Messages[i])
 		lines=lines+1
 
@@ -570,7 +570,7 @@ function me:DetermineOffset(num)
 	local Row=Recount.DetailWindow.DeathMode.DeathLog[1]
 	local NextLine
 
-	for i=1,#Data.Messages do
+	for i=1,table.getn(Data.Messages) do
 		Row.Msg:SetText("("..L["Health"]..": "..Data.Health[i]..") "..Data.Messages[i])
 		lines=lines+1
 
@@ -600,7 +600,7 @@ function me:DetermineOffset(num)
 			end
 		end
 	end
-	return #Data.Messages
+	return table.getn(Data.Messages)
 end
 
 function me:RefreshDeathLogDetails()
@@ -1295,12 +1295,12 @@ function Recount:UpdateSummaryMode(name)
 	theFrame.Damage.Misc:SetValue(math.floor(10*dot_time/(activetime)+0.5)/10)
 
 	--Set Pet Data
-	if data.Pet and #data.Pet>0 then
-		if Recount.DetailWindow.SummaryMode.CurrentPet > #data.Pet then Recount.DetailWindow.SummaryMode.CurrentPet = 1 end
+	if data.Pet and table.getn(data.Pet)>0 then
+		if Recount.DetailWindow.SummaryMode.CurrentPet > table.getn(data.Pet) then Recount.DetailWindow.SummaryMode.CurrentPet = 1 end
 		--if not Recount.db2.combatants[data.Pet[Recount.DetailWindow.SummaryMode.CurrentPet] ] then
 		--	Recount:Print("uninitialized Pet: "..data.Pet[Recount.DetailWindow.SummaryMode.CurrentPet].." "..#data.Pet.." please report")
 		--end
-		while not Recount.db2.combatants[data.Pet[Recount.DetailWindow.SummaryMode.CurrentPet] ]  and #data.Pet > 0 do
+		while not Recount.db2.combatants[data.Pet[Recount.DetailWindow.SummaryMode.CurrentPet] ]  and table.getn(data.Pet) > 0 do
 			for k,v in pairs(data.Pet) do
 				if v == data.Pet[Recount.DetailWindow.SummaryMode.CurrentPet] then
 					--Recount:Print("removed: "..v)
@@ -1310,11 +1310,11 @@ function Recount:UpdateSummaryMode(name)
 				end
 			end
 			Recount.DetailWindow.SummaryMode.CurrentPet = Recount.DetailWindow.SummaryMode.CurrentPet +1
-			if Recount.DetailWindow.SummaryMode.CurrentPet > #data.Pet then Recount.DetailWindow.SummaryMode.CurrentPet = 1 end
+			if Recount.DetailWindow.SummaryMode.CurrentPet > table.getn(data.Pet) then Recount.DetailWindow.SummaryMode.CurrentPet = 1 end
 		end
 	end
 	
-	if data.Pet and #data.Pet > 0 then
+	if data.Pet and table.getn(data.Pet) > 0 then
 		local currentPet = Recount.DetailWindow.SummaryMode.CurrentPet
 		local pet=Recount.db2.combatants[data.Pet[currentPet] ]
 		theFrame.Pet.Title:SetValue(pet.Name)
@@ -1331,7 +1331,7 @@ function Recount:UpdateSummaryMode(name)
 		Num, Focus = me:CalculateFocus(pettimedamaging)
 		theFrame.Pet.Focus:SetValue(Num.." ("..Focus.."%)")
 
-		if #data.Pet > 1 then
+		if table.getn(data.Pet) > 1 then
 			theFrame.Pet.Page:SetText(L["Click for next Pet"])
 		else
 			theFrame.Pet.Page:SetText(" ")
@@ -1994,8 +1994,8 @@ function Recount:ReportDetail(amount,loc,loc2)
 		
 		if not Recount.DetailWindow.Locked then
 			
-			if amount>#UpperTable then
-				amount=#UpperTable
+			if amount>table.getn(UpperTable) then
+				amount=table.getn(UpperTable)
 			end
 			
 			SendChatMessage("Recount - "..Recount.DetailWindow.TitleText,loc,nil,loc2)
@@ -2013,8 +2013,8 @@ function Recount:ReportDetail(amount,loc,loc2)
 			Count=Labels.Count:GetText()
 			local Text
 
-			if amount>#LowerTable then
-				amount=#LowerTable
+			if amount>table.getn(LowerTable) then
+				amount=table.getn(LowerTable)
 			end
 			
 			SendChatMessage("Recount - "..Recount.DetailWindow.TitleText..": "..UpperTable[Recount.DetailWindow.PieMode.Selected][1],loc,nil,loc2)
@@ -2046,7 +2046,7 @@ function Recount:ReportDetail(amount,loc,loc2)
 			local MsgTimes=Recount.DetailWindow.DeathMode.FilteredData.MessageTimes
 			local Msgs=Recount.DetailWindow.DeathMode.FilteredData.Messages
 			local Health=Recount.DetailWindow.DeathMode.FilteredData.Health
-			local Entries=#MsgTimes
+			local Entries=table.getn(MsgTimes)
 			local Start			
 
 			if Entries>amount then

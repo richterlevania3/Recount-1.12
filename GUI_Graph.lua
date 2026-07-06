@@ -50,7 +50,7 @@ function me:DataCopy(data)
 	local Copy=Recount:GetTable()
 	Copy[1]=Recount:GetTable()
 	Copy[2]=Recount:GetTable()
-	for i=1,#data[1] do
+	for i=1,table.getn(data[1]) do
 		Copy[1][i]=data[1][i]
 		Copy[2][i]=data[2][i]
 	end
@@ -60,7 +60,7 @@ end
 function me:DataSparsen(data,amount)
 	local Keep=Recount:GetTable()
 
-	if #data[1]==0 then
+	if table.getn(data[1])==0 then
 		return
 	end
 
@@ -101,10 +101,10 @@ function me:DataSparsen(data,amount)
 		Keep[Min]=true
 		Keep[Max]=true
 
-		Keep[#data[1]]=true
+		Keep[table.getn(data[1])]=true
 	end
 
-	local i=#data[1]
+	local i=table.getn(data[1])
 	
 	while i>0 do
 		if not Keep[i] then
@@ -132,16 +132,16 @@ function me:FilterDataByTime(data)
 				if k~=1 then
 					--If not first need to LERP to find the edge value
 					local Weight=(Recount.TimeRangeLower-data[1][k-1])/(data[1][k]-data[1][k-1])
-					filtered[2][#filtered[2]+1]=Weight*data[2][k]+(1-Weight)*data[2][k-1]
+					filtered[2][table.getn(filtered[2])+1]=Weight*data[2][k]+(1-Weight)*data[2][k-1]
 				else
 					--If this is first then insert 0 at front
-					filtered[2][#filtered[2]+1]=0
+					filtered[2][table.getn(filtered[2])+1]=0
 				end
-				filtered[1][#filtered[1]+1]=Recount.TimeRangeLower
+				filtered[1][table.getn(filtered[1])+1]=Recount.TimeRangeLower
 				First=false
 			end
-			filtered[1][#filtered[1]+1]=v
-			filtered[2][#filtered[2]+1]=data[2][k]
+			filtered[1][table.getn(filtered[1])+1]=v
+			filtered[2][table.getn(filtered[2])+1]=data[2][k]
 			Last=k
 		end
 	end
@@ -152,12 +152,12 @@ function me:FilterDataByTime(data)
 		if data[1][Last+1] then
 			--Yes, so calculate a weight and then LERP
 			local Weight=(Recount.TimeRangeUpper-data[1][Last])/(data[1][Last+1]-data[1][Last])
-			filtered[2][#filtered[2]+1]=Weight*data[2][Last+1]+(1-Weight)*data[2][Last]
+			filtered[2][table.getn(filtered[2])+1]=Weight*data[2][Last+1]+(1-Weight)*data[2][Last]
 		else
 			--No so lets insert 0
-			filtered[2][#filtered[2]+1]=0
+			filtered[2][table.getn(filtered[2])+1]=0
 		end
-		filtered[1][#filtered[1]+1]=Recount.TimeRangeUpper
+		filtered[1][table.getn(filtered[1])+1]=Recount.TimeRangeUpper
 	end
 
 	return filtered
@@ -267,8 +267,8 @@ function me:AddDataSeries(a,b)
 	a[2][PosA]=math.max(a[2][PosA],0)
 	b[2][PosB]=math.max(b[2][PosB],0)
 
-	while PosA<=#a[1] or PosB<=LengthB do
-		if PosA<=#a[1] then
+	while PosA<=table.getn(a[1]) or PosB<=LengthB do
+		if PosA<=table.getn(a[1]) then
 			if PosB<=LengthB then
 				if a[1][PosA]<b[1][PosB] then
 					if PosB~=1 then
@@ -354,8 +354,8 @@ function me:DivideDataSeries(a,b)
 
 	PosA=1
 	PosB=1
-	LengthA=#a[1]
-	LengthB=#b[1]
+	LengthA=table.getn(a[1])
+	LengthB=table.getn(b[1])
 
 
 	while PosA<=LengthA do	

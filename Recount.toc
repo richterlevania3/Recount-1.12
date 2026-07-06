@@ -28,6 +28,9 @@ Libs\LibBossIDs-1.0\LibBossIDs-1.0.lua
 Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
 Libs\LibGraph-2.0\LibGraph-2.0.lua
 
+# ---- Vanilla 1.12 API shims (bit, UnitGUID, string.match) ---------------------
+VanillaCompat.lua
+
 # ---- Locales -----------------------------------------------------------------
 locales\Recount-enUS.lua
 locales\Recount-ruRU.lua

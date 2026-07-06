@@ -12,10 +12,35 @@
       `CHAT_MSG_*` combat text into Recount's `CombatLogEvent` signature.
       Lua-5.0 clean, syntax-validated.
 
-## Remaining — Lua 5.1 → 5.0 conversion of Recount's own files
+## Done — Lua 5.1 → 5.0 conversion pass (static)
 
-WoW 1.12 runs Lua 5.0. Recount's WotLK source uses 5.1 idioms that must be
-rewritten. Inventory (static counts; each needs a real edit):
+- [x] `#t` length operator → `table.getn(t)` (107 sites across 13 files).
+- [x] Varargs rewritten to Lua 5.0 `arg`/`unpack(arg)`
+      (Tracker `CombatLogEvent`, WindowOrder, LazySync, Recount_Modes).
+- [x] `string.match` → `RecountStrMatch` shim; `string_match` locals repointed.
+- [x] String-literal colon methods (`("%.1f"):format` etc.) → `string.format`,
+      `string.reverse`/`string.gsub` (GUI_Main).
+- [x] Dead `COMBAT_LOG_EVENT_UNFILTERED` registration removed; Recount's setup
+      now calls `Recount:VCL_Enable()`.
+- [x] `VanillaCompat.lua` shims: `bit` library, `UnitGUID` (→ UnitName),
+      `RecountStrMatch`. Loaded before Recount's files.
+- [x] Every `.lua` passes `luac -p`; no `#`/`select`/`string.match`/string-colon
+      idioms remain in code.
+
+## Remaining — in-game shakeout (cannot be validated statically)
+
+- **First load test** on a 1.12 client — capture any Lua error traceback.
+- `table.getn` vs `n`-desync: the append idiom now uses `table.getn`; if any
+  table mixes `table.insert` and `[getn+1]=` writes, counts can drift. Watch
+  detail-window row counts.
+- **AceGUI/AceConfig options dialog** (`/recount` → config): exercise every
+  widget; Ace3v quirks surface here.
+- **Graphs** (`GUI_Graph`/`GUI_DeathGraph`/`GUI_Realtime`): `LibGraph` is a
+  no-op stub — windows should open but plot nothing until the renderer is ported.
+- **LazySync** (AceComm/AceSerializer cross-player sync): loads; recommend
+  leaving disabled for first verification.
+
+## Original inventory (for reference)
 
 | File | `#t` len-op | varargs `...` | `s:method()` | `string.match` |
 |------|:-:|:-:|:-:|:-:|

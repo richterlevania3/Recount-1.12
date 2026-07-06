@@ -3,8 +3,10 @@
 A backport of **Recount v4.0.1** (Cryect / Elsia, the WotLK damage & healing
 meter) to the vanilla **1.12 client**.
 
-> **Status: foundation complete, core conversion in progress — does not load yet.**
-> See [PORTING.md](PORTING.md) for exactly what remains.
+> **Status: first full conversion pass complete — needs in-game verification.**
+> All files pass a syntax check and the Lua 5.1→5.0 sweep is done, but the port
+> has **not yet been loaded on a real 1.12 client**. Expect runtime issues to
+> shake out (options dialog, graph rendering). See [PORTING.md](PORTING.md).
 
 Recount was never a vanilla addon: on 3.3.5 it is driven entirely by
 `COMBAT_LOG_EVENT_UNFILTERED`, a structured combat log that **does not exist on
@@ -44,8 +46,9 @@ a genuine from-scratch port, not a repackage.
 
 ## Install
 
-Copy the `Recount` folder into `Interface/AddOns/`. **Not yet functional** — the
-core Lua 5.1→5.0 conversion (PORTING.md) must land first.
+Copy the `Recount` folder into `Interface/AddOns/` and enable "Load out of date
+AddOns". Then `/recount`. This is an untested-in-game first cut — if it errors on
+load, the traceback tells us the next fix; please report it.
 
 ## Credits
 

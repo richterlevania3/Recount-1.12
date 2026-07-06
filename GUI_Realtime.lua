@@ -61,7 +61,7 @@ function me:UpdateTitle()
 	self.Title:SetText(StartText..EndText)
 
 	while self.Title:GetStringWidth()>Width do
-		StartText=strsub(StartText,1,#StartText-1)
+		StartText=strsub(StartText,1,table.getn(StartText)-1)
 		self.Title:SetText(StartText.."..."..EndText)
 	end
 end

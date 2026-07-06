@@ -471,7 +471,7 @@ function TooltipFuncs:Damage(name,data)
 		GameTooltip:AddLine("")
 		Recount:AddSortedTooltipData(L["Top 3"].." "..L["Attacked"],data and data.Fights[Recount.db.profile.CurDataSet] and data.Fights[Recount.db.profile.CurDataSet].DamagedWho,3)
 		if Recount.db.profile.MergePets and data.Pet --[[and dbCombatants[data.Pet[table.getn(data.Pet)] ].Init]] then
-			local petindex = #data.Pet
+			local petindex = table.getn(data.Pet)
 			local Damage
 			while not Damage and petindex > 0 do
 				Damage = data.Pet[petindex] and dbCombatants[data.Pet[petindex]] and dbCombatants[data.Pet[petindex]] and dbCombatants[data.Pet[petindex]].Fights and dbCombatants[data.Pet[petindex]].Fights[Recount.db.profile.CurDataSet] and dbCombatants[data.Pet[petindex]].Fights[Recount.db.profile.CurDataSet].Damage
@@ -521,7 +521,7 @@ function TooltipFuncs:Healing(name,data)
 		GameTooltip:AddLine("")
 		Recount:AddSortedTooltipData(L["Top 3"].." "..L["Healed"],data and data.Fights[Recount.db.profile.CurDataSet] and data.Fights[Recount.db.profile.CurDataSet].HealedWho,3)
 		if Recount.db.profile.MergePets and data.Pet --[[and dbCombatants[data.Pet[table.getn(data.Pet)] ].Init]] then
-			local petindex = #data.Pet
+			local petindex = table.getn(data.Pet)
 			local Healing
 			while not Healing and petindex > 0 do
 				Healing = data.Pet[petindex] and dbCombatants[data.Pet[petindex]] and dbCombatants[data.Pet[petindex]] and dbCombatants[data.Pet[petindex]].Fights and dbCombatants[data.Pet[petindex]].Fights[Recount.db.profile.CurDataSet] and dbCombatants[data.Pet[petindex]].Fights[Recount.db.profile.CurDataSet].Healing
@@ -624,7 +624,7 @@ local MainWindowModes={
 }
 
 function Recount:AddModeTooltip(lname,modefunc,toolfunc,...)
-	tinsert(MainWindowModes,{lname,modefunc,toolfunc,...})
+	tinsert(MainWindowModes,{lname,modefunc,toolfunc,unpack(arg)})
 	Recount:SetupMainWindow()
 end
 

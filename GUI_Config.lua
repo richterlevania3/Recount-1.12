@@ -305,7 +305,7 @@ function me:CreateSavedCheckbox(Text, parent,VarTop,VarName)
 	Checkbox.Text:SetText(Text)
 	Checkbox.Text:SetPoint("LEFT",Checkbox,"RIGHT",8,0)
 
-	SavedCheckVars[#SavedCheckVars+1]={Checkbox,VarTop,VarName}
+	SavedCheckVars[table.getn(SavedCheckVars)+1]={Checkbox,VarTop,VarName}
 
 	return Checkbox
 end

@@ -235,7 +235,7 @@ function Colors:RegisterTexture(Branch,Name,Texture, Multi)
 		ColorMultiplier[Branch][Name]={}
 	end
 
-	local entry=#ItemsToUpdate[Branch][Name]+1
+	local entry=table.getn(ItemsToUpdate[Branch][Name])+1
 	table.insert(ItemsToUpdate[Branch][Name],Texture)
 	table.insert(TypeToUpdate[Branch][Name],TYPE_TEXTURE)
 

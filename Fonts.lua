@@ -13,7 +13,7 @@ local SM = LibStub:GetLibrary("LibSharedMedia-3.0")
 function Recount:AddFontString(string)
 	local Font, Height, Flags
 
-	FontStrings[#FontStrings+1]=string
+	FontStrings[table.getn(FontStrings)+1]=string
 
 	if not FontFile and Recount.db.profile.Font then
 		FontFile=SM:Fetch("font",Recount.db.profile.Font)
