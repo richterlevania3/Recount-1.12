@@ -1,0 +1,72 @@
+## Interface: 11200
+## Title: Recount
+## Notes: Records Damage and Healing for Graph Based Display (Vanilla 1.12 port)
+## Author: Cryect, ported to 2.4 by Elsia; 1.12 port
+## Version: 4.0.1-vanilla1
+## SavedVariables: RecountDB
+## SavedVariablesPerCharacter: RecountPerCharDB
+## X-Category: Combat
+
+# ---- Libraries (Ace3v / laytya vanilla stack) --------------------------------
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceCore-3.0\AceCore-3.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceTimer-3.0\AceTimer-3.0.xml
+Libs\AceHook-3.0\AceHook-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceComm-3.0\AceComm-3.0.xml
+Libs\AceSerializer-3.0\AceSerializer-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceGUI-3.0\widgets\widgets.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\LibBossIDs-1.0\LibBossIDs-1.0.lua
+Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+Libs\LibGraph-2.0\LibGraph-2.0.lua
+
+# ---- Locales -----------------------------------------------------------------
+locales\Recount-enUS.lua
+locales\Recount-ruRU.lua
+locales\Recount-frFR.lua
+locales\Recount-deDE.lua
+locales\Recount-koKR.lua
+locales\Recount-esES.lua
+locales\Recount-zhTW.lua
+locales\Recount-zhCN.lua
+
+# ---- Core --------------------------------------------------------------------
+Recount.lua
+
+Fonts.lua
+colors.lua
+Widgets.lua
+WindowOrder.lua
+
+Fights.lua
+Recount_Modes.lua
+TrackerModules\TrackerModule_Dispels.lua
+TrackerModules\TrackerModule_Interrupts.lua
+TrackerModules\TrackerModule_Resurrection.lua
+TrackerModules\TrackerModule_CCBreakers.lua
+TrackerModules\TrackerModule_PowerGains.lua
+Tracker.lua
+VanillaCombatLog.lua
+roster.lua
+LazySync.lua
+deletion.lua
+zonefilters.lua
+debug.lua
+
+# ---- GUI ---------------------------------------------------------------------
+GUI_Main.lua
+GUI_Detail.lua
+GUI_DeathGraph.lua
+GUI_Graph.lua
+GUI_Reset.lua
+GUI_Report.lua
+GUI_Config.lua
+GUI_Realtime.lua
